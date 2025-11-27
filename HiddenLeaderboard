@@ -1,0 +1,61 @@
+-- SETTINGS --
+
+local protectedUsers = {53450830}
+
+-- End of Settings --
+
+local DataStoreService = game:GetService("DataStoreService")
+local statsStore = DataStoreService:GetDataStore("PlayerStats")
+local Players = game:GetService("Players")
+
+game.Players.PlayerAdded:Connect(function(player)
+	local hiddenLeaderboard = Instance.new("Folder")
+	hiddenLeaderboard.Name = "hiddenLeaderboard"
+	hiddenLeaderboard.Parent = player
+	
+	local banStatus = Instance.new("StringValue")
+	banStatus.Name = "banStatus"
+	banStatus.Value = "default"
+	banStatus.Parent = hiddenLeaderboard
+	
+	local key = "Player_" .. player.UserId
+
+	local success, data = pcall(function()
+		return statsStore:GetAsync(key)
+	end)
+
+	if success and data then
+		banStatus.Value = data.banStatus or banStatus.Value
+		for _, userIDString in ipairs(protectedUsers) do
+			if userIDString == player.UserId then
+				banStatus.Value = "Admin"
+			end
+		end
+		if banStatus.Value == "Banned" then
+			player:Kick("You've been banned from this game.")
+		else
+		end
+	end
+end)
+
+Players.PlayerRemoving:Connect(function(player)
+	
+	local hiddenLeaderboard = player:FindFirstChild("hiddenLeaderboard")
+	if not hiddenLeaderboard then return end
+	
+	local banStatus = hiddenLeaderboard:FindFirstChild("banStatus")
+	if not banStatus then return end
+
+	local key = "Player_" .. player.UserId
+	local dataToSave = {
+		banStatus = banStatus.Value
+	}
+
+	local success, err = pcall(function()
+		statsStore:SetAsync(key, dataToSave)
+	end)
+
+	if not success then
+		warn("Failed to save data for", player.Name, ":", err)
+	end
+end)
