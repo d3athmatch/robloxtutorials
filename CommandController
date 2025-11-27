@@ -1,0 +1,114 @@
+-- SETTINGS --
+
+local prefix = "!"
+local sendServerBanMessage = true
+local canAdminUserIDs = {53450830}
+
+-- End of Settings --
+
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local SendChat = ReplicatedStorage:WaitForChild("ServerMessageEvent")
+local DataStoreService = game:GetService("DataStoreService")
+local statsStore = DataStoreService:GetDataStore("PlayerStats")
+
+local commands = {"ban", "admin", "unban", "useridban"}
+
+commands.useridban = function(player, args)
+	local banPlayer = args[1]
+	local hiddenLeaderboard = player:FindFirstChild("hiddenLeaderboard")
+	if not hiddenLeaderboard then return end
+
+	local banStatus = hiddenLeaderboard:FindFirstChild("banStatus")
+	if not banStatus then return end
+
+	local key = "Player_" .. banPlayer
+	local dataToSave = {
+		banStatus = "Banned"
+	}
+	local success, err = pcall(function()
+		statsStore:SetAsync(key, dataToSave)
+	end)
+	if not success then
+		warn("Failed to save data for", player.Name, ":", err)
+	end
+	SendChat:FireClient(player, "Player "..banPlayer.." has been banned.")
+end
+
+commands.ban = function(player, args)
+	local banPlayer = args[1]
+	if Players:FindFirstChild(banPlayer) then
+		local foundPlayer = game.Players:FindFirstChild(banPlayer)
+		foundPlayer.hiddenLeaderboard.banStatus.Value = "Banned"
+		foundPlayer:Kick("You have been banned from this game.")
+		if sendServerBanMessage == true then
+			SendChat:FireAllClients(foundPlayer.Character.Name.." has been banned from the game.")
+		end
+	else
+		SendChat:FireClient(player, "Player not found.")
+	end
+end
+
+commands.admin = function(player, args)
+	local adminPlayer = args[1] 
+	for _, name in ipairs(canAdminUserIDs) do
+		if name == player.UserId then
+			if Players:FindFirstChild(adminPlayer) then
+				local foundPlayer = game.Players:FindFirstChild(adminPlayer)
+				foundPlayer.hiddenLeaderboard.banStatus.Value = "Admin"
+			else
+				SendChat:FireClient(player, "Player not found.")	
+			end
+		end
+	
+	end
+end
+
+commands.unban = function(player, args)
+	local unbanPlayer = args[1]
+	local hiddenLeaderboard = player:FindFirstChild("hiddenLeaderboard")
+	if not hiddenLeaderboard then return end
+
+	local banStatus = hiddenLeaderboard:FindFirstChild("banStatus")
+	if not banStatus then return end
+
+	local key = "Player_" .. unbanPlayer
+	local dataToSave = {
+		banStatus = "na"
+	}
+
+	local success, err = pcall(function()
+		statsStore:SetAsync(key, dataToSave)
+	end)
+
+	if not success then
+		warn("Failed to save data for", player.Name, ":", err)
+	end
+	SendChat:FireClient(player, "Player "..unbanPlayer.." has been unbanned.")
+end
+
+local function onPlayerChatted(player, message)
+	if string.sub(message, 1, #prefix) ~= prefix then
+		return
+	end
+	
+	local content = string.sub(message, #prefix + 1)
+	local parts = string.split(content, " ")
+	local commandName = string.lower(parts[1])
+	table.remove(parts, 1)
+	
+	local commandFunc = commands[commandName]
+	if commandFunc then
+		if player.hiddenLeaderboard.banStatus.Value == "Admin" then
+			commandFunc(player, parts)
+		else
+			SendChat:FireClient("You do not have access to commands!")
+		end
+	end
+end
+
+Players.PlayerAdded:Connect(function(player)
+	player.Chatted:Connect(function(message)
+		onPlayerChatted(player, message)
+	end)
+end)
