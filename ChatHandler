@@ -1,0 +1,39 @@
+-- SETTINGS --
+
+local sendWelcomeMessage = true
+local welcomeMessage = "Welcome to the game! Please be appropriate or you will be banned based on Admin discretion"
+
+local sendAdminMessage = true
+local adminMessage = "You are an Admin! Please use proper discretion."
+
+-- End of Settings -- 
+
+task.wait(2)  -- give chat time to fully load
+
+
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local TextChatService = game:GetService("TextChatService")
+
+local ServerMessageEvent = ReplicatedStorage:WaitForChild("ServerMessageEvent")
+
+-- Get the main chat channel
+local textChannels = TextChatService:WaitForChild("TextChannels")
+local generalChannel = textChannels:WaitForChild("RBXGeneral")
+
+if sendWelcomeMessage == true then
+	if game.Players.LocalPlayer.hiddenLeaderboard.banStatus.Value ~= "Admin" then
+		generalChannel:DisplaySystemMessage("[SERVER] "..welcomeMessage)
+	end
+end
+
+if sendAdminMessage == true then
+	if game.Players.LocalPlayer.hiddenLeaderboard.banStatus.Value == "Admin" then
+		generalChannel:DisplaySystemMessage("[SERVER] "..adminMessage)
+	end
+end
+
+ServerMessageEvent.OnClientEvent:Connect(function(msg)
+	generalChannel:DisplaySystemMessage("[SERVER] "..msg)
+end)
+
+
