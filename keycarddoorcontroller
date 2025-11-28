@@ -1,0 +1,16 @@
+script.Parent.Touched:Connect(function(part)
+	if part.Name == "Handle" then
+		local cardID = part.Parent:FindFirstChild("KeyCardID")
+		if cardID then
+			if cardID.Value == script.Parent.KeyCardID.Value then
+				script.Parent.Transparency = 1
+				script.Parent.CanCollide = false
+				script.Parent.SurfaceGui.DoorNum.TextTransparency = 1
+				wait(3)
+				script.Parent.Transparency = 0
+				script.Parent.CanCollide = true
+				script.Parent.SurfaceGui.DoorNum.TextTransparency = 0
+			end
+		end
+	end
+end)
