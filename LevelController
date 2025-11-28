@@ -1,0 +1,13 @@
+local player = game.Players.LocalPlayer
+wait(1)
+local leaderstats = player:FindFirstChild("leaderstats")
+while true do
+	wait()
+	local nextLevel = leaderstats.Level.Value + 1
+	local neededXP = ((nextLevel * 25)+(nextLevel*10))*1.5
+	if leaderstats.XP.Value >= neededXP then
+		leaderstats.Level.Value = nextLevel
+		leaderstats.Cash.Value = leaderstats.Cash.Value + (nextLevel*1000)
+		leaderstats.XP.Value = 0
+	end
+end
