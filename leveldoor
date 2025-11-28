@@ -1,0 +1,14 @@
+script.Parent.Touched:Connect(function(player)
+	if player.Parent:FindFirstChild("Humanoid") then
+		local Players = game:GetService("Players")
+		local localPlayer = Players:FindFirstChild(player.Parent.Name)
+		local leaderboard = localPlayer.leaderstats
+		if leaderboard.Level.Value >= 4 then
+			script.Parent.CanCollide = false
+			script.Parent.Transparency = 1
+			wait(1)
+			script.Parent.CanCollide = true
+			script.Parent.Transparency = 0
+		end
+	end
+end)
