@@ -1,0 +1,37 @@
+local replicatedStorage = game:GetService("ReplicatedStorage")
+local coin = replicatedStorage:FindFirstChild("Coin")
+local coinRangePart = replicatedStorage:FindFirstChild("CoinRange")
+local coinRangePartPos = coinRangePart.Position
+
+local range = 25
+local coinLimit = 25
+local startNum = 10
+local spawnTime = .1
+local startSpawnDelay = 30
+
+local spawnedCoinsFolder = Instance.new("Folder")
+spawnedCoinsFolder.Parent = game.Workspace
+spawnedCoinsFolder.Name = "SpawnedCoinsStorage"
+
+for i = 1, startNum do
+	local coinClone = coin:Clone()
+	coinClone.Parent = spawnedCoinsFolder
+	local posX = math.random(-range, range)
+	local posZ = math.random(-range, range)
+	coinClone.Position = Vector3.new(coinRangePartPos.X+posX, coinRangePartPos.Y, coinRangePartPos.Z+posZ)
+	wait()
+end
+
+wait(startSpawnDelay)
+
+while true do
+	wait(spawnTime)
+	if #spawnedCoinsFolder:GetChildren("Coin") < coinLimit then
+		local coinClone = coin:Clone()
+		coinClone.Parent = spawnedCoinsFolder
+		local posX = math.random(-range, range)
+		local posZ = math.random(-range, range)
+		coinClone.Position = Vector3.new(coinRangePartPos.X+posX, coinRangePartPos.Y, coinRangePartPos.Z+posZ)
+		wait()
+	end 
+end
