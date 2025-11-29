@@ -1,0 +1,12 @@
+local replicatedStorage = game:GetService("ReplicatedStorage")
+local event = replicatedStorage:FindFirstChild("DoorToggle")
+
+event.OnServerEvent:Connect(function()
+	if script.Parent.CanCollide == false then
+		script.Parent.CanCollide = true
+		script.Parent.Transparency = 0
+	else
+		script.Parent.CanCollide = false
+		script.Parent.Transparency = 1
+	end
+end)
