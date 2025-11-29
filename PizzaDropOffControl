@@ -1,0 +1,28 @@
+local cooldown = false
+
+script.Parent.ClickDetector.MouseClick:Connect(function(player)
+	local players = game:GetService("Players")
+	local plr = players:FindFirstChild(player.Name)
+	if plr.Backpack:FindFirstChild("Box") ~= nil then
+		if cooldown == false then
+			if script.Parent.Parent:FindFirstChild("PizzaBoxDropOff") == nil then
+				cooldown = true
+				local replicatedStorage = game:GetService("ReplicatedStorage")
+				local players = game:GetService("Players")
+				local plr = players:FindFirstChild(player.Name)
+				local pizzaBox = replicatedStorage:FindFirstChild("PizzaBoxDropOff")
+				local pizzaClone = pizzaBox:Clone()
+				pizzaClone.Parent = script.Parent.Parent
+				plr.leaderstats.Cash.Value = plr.leaderstats.Cash.Value + 10
+				plr.Backpack:FindFirstChild("Box"):Destroy()
+				wait(5)
+				pizzaClone:Destroy()
+			end
+			cooldown = true
+			wait(10)
+			cooldown = false
+		end
+
+		
+	end
+end)
