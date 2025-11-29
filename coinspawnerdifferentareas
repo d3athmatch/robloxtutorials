@@ -1,0 +1,47 @@
+local replicatedStorage = game:GetService("ReplicatedStorage")
+local coin = replicatedStorage:FindFirstChild("Coin")
+local serverStorage = game:GetService("ServerStorage")
+local coinSpawnRanges = replicatedStorage:FindFirstChild("CoinSpawnRanges")
+
+wait()
+local coinRangePart = coinSpawnRanges:FindFirstChild("Range"..script.Parent.RandomSpawnArea.RandomSpawnNum.Value)
+local coinRangePartPos = coinRangePart.Position
+
+local range = 25 -- Max Distance from Range Part that 
+local coinLimit = 20 -- Max amount of Coins
+local startNum = 5 -- Number of Coins to Start With
+local spawnTime = .1 -- Time Between Each Coin Spawning
+local startRespawnDelay = 2 -- Takes 2 Seconds for Coins to Start Spawning 
+
+local spawnedCoinsFolder = Instance.new("Folder")
+spawnedCoinsFolder.Parent = game.Workspace
+spawnedCoinsFolder.Name = "SpawnedCoinsStorage"
+
+for i = 1, startNum do
+	local coinClone = coin:Clone()
+	coinClone.Parent = spawnedCoinsFolder
+	local posX = math.random(-range, range)
+	local posZ = math.random(-range, range)
+	coinClone.Position = Vector3.new(coinRangePartPos.X+posX, coinRangePartPos.Y, coinRangePartPos.Z+posZ)
+	wait()
+end
+
+wait(startRespawnDelay)
+
+while true do
+	wait(spawnTime)
+	local coinRangePart = coinSpawnRanges:FindFirstChild("Range"..script.Parent.RandomSpawnArea.RandomSpawnNum.Value)
+	local coinRangePartPos = coinRangePart.Position
+	local SpawnedCoinsStore = game.Workspace:FindFirstChild("SpawnedCoinsStorage")
+	if game.Workspace:FindFirstChild("SpawnedCoinsStorage") then
+		if #SpawnedCoinsStore:GetChildren("Coin") < coinLimit then
+			local coinClone = coin:Clone()
+			coinClone.Parent = game.Workspace:FindFirstChild("SpawnedCoinsStorage")
+			local posX = math.random(-range, range)
+			local posZ = math.random(-range, range)
+			coinClone.Position = Vector3.new(coinRangePartPos.X+posX, coinRangePartPos.Y, coinRangePartPos.Z+posZ)
+			wait()
+		end 
+	end
+end
+
