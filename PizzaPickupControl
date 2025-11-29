@@ -1,0 +1,9 @@
+script.Parent.ClickDetector.MouseClick:Connect(function(player)
+	local players = game:GetService("Players")
+	local plr = players:FindFirstChild(player.Name)
+	local replicatedStorage = game:GetService("ReplicatedStorage")
+	local tool = replicatedStorage:FindFirstChild("Box")
+	local toolClone = tool:Clone()
+	toolClone.Parent = plr.Backpack
+	script.Parent:Destroy()
+end)
