@@ -1,0 +1,11 @@
+local players = game:GetService("Players")
+
+script.Parent.Touched:Connect(function(playerPart)
+	if playerPart.Parent:FindFirstChild("Humanoid") ~= nil then
+		local player = players:FindFirstChild(playerPart.Parent.Name)
+		local coins = player.leaderstats:FindFirstChild("Coins")
+		coins.Value = coins.Value + script.Parent.CoinValue.Value
+		script.Parent:Destroy()
+	else
+	end
+end)
