@@ -1,0 +1,25 @@
+local bounceHeight = .5
+local bounceSpeed = 1.5
+local spinSpeed = 5
+
+local TweenService = game:GetService("TweenService")
+
+local part = script.Parent
+part.Orientation = Vector3.new(part.Orientation.X, math.random(0, 180), part.Orientation.Z)
+local partPosition = part.Position
+local partOrientation = part.Orientation
+
+local bounceGoal = {}
+bounceGoal.Position = Vector3.new(partPosition.X, partPosition.Y+bounceHeight, partPosition.Z)
+
+local bounce = TweenInfo.new(bounceSpeed, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true, 0)
+local bounceTween = TweenService:Create(part, bounce, bounceGoal)
+
+local spinGoal = {}
+spinGoal.Orientation = Vector3.new(partOrientation.X, partOrientation.Y, partOrientation. Z+180)
+
+local spin = TweenInfo.new(spinSpeed, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut, -1, false, 0)
+local spinTween = TweenService:Create(part, spin, spinGoal)
+
+bounceTween:Play()
+spinTween:Play()
