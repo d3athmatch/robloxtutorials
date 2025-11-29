@@ -1,0 +1,33 @@
+script.RandomSpawnNum.Value = 1
+
+local secondsToSpawnChange = 5 -- Time it takes for a Spawn to Change
+local delayBetweenCoinSpawns = 1 -- Time from When the Spawn Changes to when coins start Spawning
+
+local replicatedStorage = game:GetService("ReplicatedStorage")
+local coinSpawnRangeFolder = replicatedStorage:FindFirstChild("CoinSpawnRanges")
+local spawnRangeNum = #coinSpawnRangeFolder:GetChildren()
+local previousSpawn = 0
+local firstRun = true
+
+while true do
+	wait(secondsToSpawnChange)
+	if firstRun == true then
+		previousSpawn = 1
+		firstRun = false
+	end
+	local randomSpawn = math.random(1, spawnRangeNum)
+	while randomSpawn == previousSpawn do
+		randomSpawn = math.random(1, spawnRangeNum)
+		wait()
+	end
+	local coinStorage = game.Workspace:FindFirstChild("SpawnedCoinsStorage")
+	coinStorage:Destroy()
+	wait(delayBetweenCoinSpawns)
+	
+	local spawnedCoinsFolder = Instance.new("Folder")
+	spawnedCoinsFolder.Parent = game.Workspace
+	spawnedCoinsFolder.Name = "SpawnedCoinsStorage"
+	
+	script.RandomSpawnNum.Value = randomSpawn
+	previousSpawn = randomSpawn
+end
