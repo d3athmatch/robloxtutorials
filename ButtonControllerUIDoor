@@ -1,0 +1,13 @@
+local replicatedStorage = game:GetService("ReplicatedStorage")
+local door = game.Workspace:FindFirstChild("Door")
+local player = game.Players.LocalPlayer
+local event = replicatedStorage:FindFirstChild("DoorToggle")
+
+script.Parent.MouseButton1Down:Connect(function() 
+	event:FireServer()
+	if script.Parent.Text == "Open Door" then
+		script.Parent.Text = "Close Door"
+	else
+		script.Parent.Text = "Open Door"
+	end
+end)
