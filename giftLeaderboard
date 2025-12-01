@@ -1,0 +1,55 @@
+local DataStoreService = game:GetService("DataStoreService")
+local statsStore = DataStoreService:GetDataStore("PlayerStats")
+local Players = game:GetService("Players")
+
+game.Players.PlayerAdded:Connect(function(player)
+	local leaderstats = Instance.new("Folder")
+	leaderstats.Parent = player
+	leaderstats.Name = "leaderstats"
+	
+	local cash = Instance.new("IntValue")
+	cash.Parent = leaderstats
+	cash.Value = 0
+	cash.Name = "Cash"
+	
+	local giftClaimed = Instance.new("BoolValue")
+	giftClaimed.Parent = leaderstats
+	giftClaimed.Value = false
+	giftClaimed.Name = "GiftClaimed"
+	
+	local key = "Player_" .. player.UserId
+
+	local success, data = pcall(function()
+		return statsStore:GetAsync(key)
+	end)
+
+	if success and data then
+		cash.Value = data.cash or cash.Value
+		giftClaimed.Value = data.giftClaimed or giftClaimed.Value
+	end
+
+end)
+
+Players.PlayerRemoving:Connect(function(player)
+
+	local leaderstats = player:FindFirstChild("leaderstats")
+	if not leaderstats then return end
+	local cash = leaderstats:FindFirstChild("Cash")
+	local giftClaimed = leaderstats:FindFirstChild("GiftClaimed")
+
+
+	local key = "Player_" .. player.UserId
+	local dataToSave = {
+		cash = cash.Value,
+		giftClaimed.Value,
+
+	}
+
+	local success, err = pcall(function()
+		statsStore:SetAsync(key, dataToSave)
+	end)
+
+	if not success then
+		warn("Failed to save data for", player.Name, ":", err)
+	end
+end)
