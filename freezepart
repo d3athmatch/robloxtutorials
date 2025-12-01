@@ -1,0 +1,17 @@
+local inUse = false
+
+script.Parent.Touched:Connect(function(playerPart)
+	local character = playerPart.Parent
+	local humanoid = character:FindFirstChild("Humanoid")
+	if humanoid and inUse == false then
+		inUse = true
+		humanoid.WalkSpeed = 10
+		for i = 1, script.Parent.EffectLength.Value do
+			humanoid.Health = humanoid.Health - 10
+			humanoid.WalkSpeed = humanoid.WalkSpeed - 2
+			wait(1)
+		end
+		humanoid.WalkSpeed = 16
+		inUse = false
+	end
+end)
