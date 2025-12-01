@@ -1,0 +1,12 @@
+local replicatedStorage = game:GetService("ReplicatedStorage")
+local giftStart = replicatedStorage:FindFirstChild("GiftEvents").GiftStart
+local giftGiver = replicatedStorage:FindFirstChild("GiftEvents").GiftGiver
+
+giftStart.OnClientEvent:Connect(function()
+	script.Parent.Visible = true
+end)
+
+script.Parent.MouseButton1Down:Connect(function()
+	giftGiver:FireServer()
+	script.Parent.Visible = false
+end)
