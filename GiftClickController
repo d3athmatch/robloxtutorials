@@ -1,0 +1,11 @@
+local gift = script.Parent
+local replicatedStorage = game:GetService("ReplicatedStorage")
+local giftFolder = replicatedStorage:FindFirstChild("GiftableTools")
+
+gift.ClickDetector.MouseClick:Connect(function(player)
+	local giftTools = giftFolder:GetChildren()
+	local randomGift = giftTools[math.random(1, #giftTools)]
+	local giftClone = randomGift:Clone()
+	giftClone.Parent = player.Backpack
+	gift:Destroy()
+end)
