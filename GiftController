@@ -1,0 +1,18 @@
+local replicatedStorage = game:GetService("ReplicatedStorage")
+local eventFolder = replicatedStorage:FindFirstChild("GiftEvents")
+
+game.Players.PlayerAdded:Connect(function(player)
+	wait(1)
+	local leaderstats = game.Players:FindFirstChild(player.Name):FindFirstChild("leaderstats")
+	local giftClaimed = leaderstats:FindFirstChild("GiftClaimed")
+	if giftClaimed.Value == false then
+		eventFolder.GiftStart:FireClient(player)
+	end
+end)
+
+eventFolder:FindFirstChild("GiftGiver").OnServerEvent:Connect(function(player)
+	local leaderstats = game.Players:FindFirstChild(player.Name):FindFirstChild("leaderstats")
+	local giftClaimed = leaderstats:FindFirstChild("GiftClaimed")
+	giftClaimed.Value = true
+	leaderstats.Cash.Value = leaderstats.Cash.Value + 1000
+end)
