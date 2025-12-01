@@ -1,0 +1,32 @@
+local replicatedStorage = game:GetService("ReplicatedStorage")
+local gift = replicatedStorage:FindFirstChild("Gift")
+local giftSpawnPart = replicatedStorage:FindFirstChild("GiftSpawnPart")
+local giftSpawnPartPos = giftSpawnPart.Position
+
+local spawnedGiftFolder = Instance.new("Folder")
+spawnedGiftFolder.Parent = game.Workspace
+spawnedGiftFolder.Name = "SpawnedGifts"
+
+local timeBetweenGiftSpawns = 1
+local spawnRadius = 50
+local maxGifts = 10
+
+while true do
+	wait(timeBetweenGiftSpawns)
+	local posX = math.random(giftSpawnPartPos.X-spawnRadius, giftSpawnPartPos.X+spawnRadius)
+	local posZ = math.random(giftSpawnPartPos.Z-spawnRadius, giftSpawnPartPos.Z+spawnRadius)
+	
+	local giftColors = {"Bright blue", "Mid gray", "Artichoke", "Dusty Rose"}
+	
+	local giftClone = gift:Clone()
+	giftClone.BrickColor = BrickColor.new(giftColors[math.random(1, #giftColors)])
+	giftClone.Position = Vector3.new(posX, giftSpawnPartPos.Y, posZ)
+	giftClone.Parent = game.Workspace.SpawnedGifts
+	
+	local totalSpawnedGifts = #game.Workspace.SpawnedGifts:GetChildren()
+	if totalSpawnedGifts == maxGifts then
+		spawnedGiftFolder:FindFirstChild("Gift"):Destroy()
+	end
+	
+	
+end
